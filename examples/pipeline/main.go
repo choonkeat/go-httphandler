@@ -10,6 +10,7 @@ import (
 
 	"github.com/alvinchoong/go-httphandler"
 	"github.com/alvinchoong/go-httphandler/jsonresp"
+	"github.com/alvinchoong/go-httphandler/pipeline"
 )
 
 // ========== Domain Types ==========
@@ -227,9 +228,9 @@ func UpdateProduct(tenant Tenant, user User, product Product, input ProductInput
 func main() {
 	// Create pipeline stages with the new flattened structure
 	// No need to pass options when default error handling is sufficient
-	tenantPipeline := httphandler.NewPipeline1(DecodeTenant)
-	userPipeline := httphandler.NewPipeline2(DecodeTenant, DecodeUser)
-	productPipeline := httphandler.NewPipeline3(DecodeTenant, DecodeUser, DecodeProduct)
+	tenantPipeline := pipeline.New1(DecodeTenant)
+	userPipeline := pipeline.New2(DecodeTenant, DecodeUser)
+	productPipeline := pipeline.New3(DecodeTenant, DecodeUser, DecodeProduct)
 
 	// Set up router
 	router := http.NewServeMux()
@@ -260,7 +261,7 @@ func main() {
 	))
 
 	// Route: Create product (requires tenant, user, and input)
-	router.HandleFunc("POST /products", httphandler.HandlePipeline2WithInput(
+	router.HandleFunc("POST /products", pipeline.Handle2WithInput(
 		userPipeline,
 		DecodeProductInput,
 		func(ctx context.Context, tenant Tenant, user User, input ProductInput) httphandler.Responder {
@@ -269,7 +270,7 @@ func main() {
 	))
 
 	// Route: Update product (requires tenant, user, product, and input)
-	router.HandleFunc("PUT /products/{id}", httphandler.HandlePipeline3WithInput(
+	router.HandleFunc("PUT /products/{id}", pipeline.Handle3WithInput(
 		productPipeline,
 		DecodeProductInput,
 		func(ctx context.Context, tenant Tenant, user User, product Product, input ProductInput) httphandler.Responder {
