@@ -71,35 +71,35 @@ func TestPipelineCompilation(t *testing.T) {
 	p8 := NewPipeline8(decoder1, decoder2, decoder3, decoder4, decoder5, decoder6, decoder7, decoder8)
 
 	// Create handlers (just verifying compilation)
-	_ = HandlePipelineWithInput1(p1, inputDecoder, func(ctx context.Context, ctx1 TestContext1, input TestInput) Responder {
+	_ = HandlePipeline1WithInput(p1, inputDecoder, func(ctx context.Context, ctx1 TestContext1, input TestInput) Responder {
 		return nil
 	})
 
-	_ = HandlePipelineWithInput2(p2, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, input TestInput) Responder {
+	_ = HandlePipeline2WithInput(p2, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, input TestInput) Responder {
 		return nil
 	})
 
-	_ = HandlePipelineWithInput3(p3, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, input TestInput) Responder {
+	_ = HandlePipeline3WithInput(p3, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, input TestInput) Responder {
 		return nil
 	})
 
-	_ = HandlePipelineWithInput4(p4, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, input TestInput) Responder {
+	_ = HandlePipeline4WithInput(p4, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, input TestInput) Responder {
 		return nil
 	})
 
-	_ = HandlePipelineWithInput5(p5, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, input TestInput) Responder {
+	_ = HandlePipeline5WithInput(p5, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, input TestInput) Responder {
 		return nil
 	})
 
-	_ = HandlePipelineWithInput6(p6, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, ctx6 TestContext6, input TestInput) Responder {
+	_ = HandlePipeline6WithInput(p6, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, ctx6 TestContext6, input TestInput) Responder {
 		return nil
 	})
 
-	_ = HandlePipelineWithInput7(p7, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, ctx6 TestContext6, ctx7 TestContext7, input TestInput) Responder {
+	_ = HandlePipeline7WithInput(p7, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, ctx6 TestContext6, ctx7 TestContext7, input TestInput) Responder {
 		return nil
 	})
 
-	_ = HandlePipelineWithInput8(p8, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, ctx6 TestContext6, ctx7 TestContext7, ctx8 TestContext8, input TestInput) Responder {
+	_ = HandlePipeline8WithInput(p8, inputDecoder, func(ctx context.Context, ctx1 TestContext1, ctx2 TestContext2, ctx3 TestContext3, ctx4 TestContext4, ctx5 TestContext5, ctx6 TestContext6, ctx7 TestContext7, ctx8 TestContext8, input TestInput) Responder {
 		return nil
 	})
 
@@ -140,7 +140,7 @@ func TestPipelineExecution(t *testing.T) {
 	actionPipeline := NewPipeline2(userDecoder, actionDecoder)
 
 	// Create handler
-	handler := HandlePipelineWithInput2(actionPipeline, decodeLoginInput,
+	handler := HandlePipeline2WithInput(actionPipeline, decodeLoginInput,
 		func(ctx context.Context, user UserContext, action ActionContext, input LoginInput) Responder {
 			// Simple success responder for testing
 			return &testResponder{
@@ -180,7 +180,7 @@ func TestPipelineErrorHandling(t *testing.T) {
 	pipeline := NewPipeline1(failingDecoder)
 
 	// Create handler
-	handler := HandlePipelineWithInput1(pipeline, func(r *http.Request) (struct{}, error) {
+	handler := HandlePipeline1WithInput(pipeline, func(r *http.Request) (struct{}, error) {
 		return struct{}{}, nil	}, func(ctx context.Context, val struct{}, input struct{}) Responder {
 		return &testResponder{message: "This should not be called"}
 	})
@@ -327,7 +327,7 @@ func TestPipelineDeepChaining(t *testing.T) {
 	p8 := NewPipeline8(decoder1, decoder2, decoder3, decoder4, decoder5, decoder6, decoder7, decoder8)
 
 	// Create handler with all 8 contexts
-	handler := HandlePipelineWithInput8(p8, inputDecoder,
+	handler := HandlePipeline8WithInput(p8, inputDecoder,
 		func(ctx context.Context, c1 Context1, c2 Context2, c3 Context3, c4 Context4, c5 Context5, c6 Context6, c7 Context7, c8 Context8, input Input) Responder {
 			return &testResponder{
 				message: fmt.Sprintf("c1=%s, c2=%s, c3=%s, c4=%s, c5=%s, c6=%s, c7=%s, c8=%s, input=%s",
@@ -388,7 +388,7 @@ func TestHandlePipelineWithInputStage(t *testing.T) {
 	}
 
 	// Create the handler with the pipeline
-	handlerFunc := HandlePipelineWithInput1(pipeline1, inputDecoder, handler)
+	handlerFunc := HandlePipeline1WithInput(pipeline1, inputDecoder, handler)
 
 	// Create a test request
 	req := httptest.NewRequest("GET", "/test", nil)
@@ -450,7 +450,7 @@ func TestHandlePipelineWithComplexInputStage(t *testing.T) {
 	}
 
 	// Create the handler with the pipeline
-	handlerFunc := HandlePipelineWithInput2(pipeline2, inputDecoder, handler)
+	handlerFunc := HandlePipeline2WithInput(pipeline2, inputDecoder, handler)
 
 	// Create a test request
 	req := httptest.NewRequest("GET", "/test", nil)

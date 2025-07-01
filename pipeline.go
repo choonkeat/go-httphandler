@@ -1,6 +1,7 @@
 package httphandler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -329,3 +330,61 @@ func (e *errorResponse) Respond(w http.ResponseWriter, r *http.Request) {
 // ========== Handler creator imports ==========
 
 // See pipeline_handlers.go for handler implementations
+
+// ========== Pipeline Handle methods ==========
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline1[C]) Handle(
+	handler func(ctx context.Context, val C) Responder,
+) http.HandlerFunc {
+	return HandlePipeline1(p, handler)
+}
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline2[C1, C2]) Handle(
+	handler func(ctx context.Context, val1 C1, val2 C2) Responder,
+) http.HandlerFunc {
+	return HandlePipeline2(p, handler)
+}
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline3[C1, C2, C3]) Handle(
+	handler func(ctx context.Context, val1 C1, val2 C2, val3 C3) Responder,
+) http.HandlerFunc {
+	return HandlePipeline3(p, handler)
+}
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline4[C1, C2, C3, C4]) Handle(
+	handler func(ctx context.Context, val1 C1, val2 C2, val3 C3, val4 C4) Responder,
+) http.HandlerFunc {
+	return HandlePipeline4(p, handler)
+}
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline5[C1, C2, C3, C4, C5]) Handle(
+	handler func(ctx context.Context, val1 C1, val2 C2, val3 C3, val4 C4, val5 C5) Responder,
+) http.HandlerFunc {
+	return HandlePipeline5(p, handler)
+}
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline6[C1, C2, C3, C4, C5, C6]) Handle(
+	handler func(ctx context.Context, val1 C1, val2 C2, val3 C3, val4 C4, val5 C5, val6 C6) Responder,
+) http.HandlerFunc {
+	return HandlePipeline6(p, handler)
+}
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline7[C1, C2, C3, C4, C5, C6, C7]) Handle(
+	handler func(ctx context.Context, val1 C1, val2 C2, val3 C3, val4 C4, val5 C5, val6 C6, val7 C7) Responder,
+) http.HandlerFunc {
+	return HandlePipeline7(p, handler)
+}
+
+// Handle creates a handler using this pipeline with no additional input decoder
+func (p Pipeline8[C1, C2, C3, C4, C5, C6, C7, C8]) Handle(
+	handler func(ctx context.Context, val1 C1, val2 C2, val3 C3, val4 C4, val5 C5, val6 C6, val7 C7, val8 C8) Responder,
+) http.HandlerFunc {
+	return HandlePipeline8(p, handler)
+}
